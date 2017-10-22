@@ -1,0 +1,152 @@
+<html>
+<head>
+  <div id="chartContainer">
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+  <script type="text/javascript">
+   function draw(data)
+   {
+   var classType=[3,2,1];
+   var chartdrawn="N";
+   
+   
+   
+   function summary_chart(data)
+   {
+   var svg = dimple.newSvg("#chartContainer", 590, 400);
+   var svg = dimple.newSvg("#chartContainer", "1200", "400px");
+   var myChart = new dimple.chart(svg, data);
+   myChart.setBounds(800, 45, "300", "270");
+   myChart.addCategoryAxis("x", ["ageBracket","Sex"]);
+   var yaxis=myChart.addMeasureAxis("y", "Survived");
+   yaxis.overrideMax = 100;
+   yaxis.overrideMin =0;
+   yaxis.ticks=10;
+   myChart.addSeries("Sex", dimple.plot.bar);
+   myChart.addLegend(825, 30, 380, 20, "right");
+   myChart.ease = "bounce";
+   //myChart.staggerDraw = true;
+   var myStoryboard=myChart.setStoryboard("Pclass");
+   myChart.draw();
+   myStoryboard.addOrderRule("Pclass",true);
+   myStoryboard.storyLabel.attr("x",60);
+   };
+   
+   
+   function plot_chart(data,classType)
+   {
+      var svg = dimple.newSvg("#chartContainer", 590, 400);
+ 
+         var row = 0,
+          col = 0,
+          top = 25,
+          left = 60,
+          inMarg = 15,
+          width = 115,
+          height = 90,
+          totalWidth = parseFloat(svg.attr("width"));
+
+  /* if (chartdrawn==="Y")
+   {
+      debugger;
+   d3.selectAll("svg > *").remove();
+   var svg = dimple.newSvg("#chartContainer", 590, 400);
+   var myChart = new dimple.chart(svg, data);
+   myChart.setBounds(65, 45, 505, 315);
+   myChart.addCategoryAxis("x", ["ageBracket","Sex"]);
+   myChart.addMeasureAxis("y", "Survived");
+   myChart.addSeries("Sex", dimple.plot.bar);
+   myChart.addLegend(200, 10, 380, 20, "right");
+   myChart.draw();
+   }
+   else
+   { */
+   if (classType===1)
+   {
+    svg
+    .append("text")
+     .attr("x", 150)
+      .attr("y", 100)
+      .style("font-family", "sans-serif")
+      .style("text-anchor", "middle")
+      .style("font-size", "28px")
+      .style("opacity", 0.2)
+      .text("PClass "+classType);
+   var myChart = new dimple.chart(svg, data);
+    myChart.setBounds(
+            65, 45, 505, 315);
+   myChart.addCategoryAxis("x", ["ageBracket","Sex"]);
+   var yaxis=myChart.addMeasureAxis("y", "Survived");
+   yaxis.overrideMax = 100;
+   yaxis.overrideMin =0;
+   yaxis.ticks=10;
+   myChart.addSeries("Sex", dimple.plot.bar);
+   myChart.addLegend(200, 10, 380, 20, "right");
+   myChart.draw();
+
+   }
+   else
+   {
+     
+    svg
+    .append("text")
+     .attr("x", 150)
+      .attr("y", 100)
+      .style("font-family", "sans-serif")
+      .style("text-anchor", "middle")
+      .style("font-size", "28px")
+      .style("opacity", 0.2)
+      .text("PClass "+classType);
+   var myChart = new dimple.chart(svg, data);
+    myChart.setBounds(
+            65, 45, 505, 315);
+   myChart.addCategoryAxis("x", ["ageBracket","Sex"]);
+   var yaxis=myChart.addMeasureAxis("y", "Survived");
+   yaxis.overrideMax = 100;
+   yaxis.overrideMin =0;
+   yaxis.ticks=10;
+   myChart.addSeries("Sex", dimple.plot.bar);
+   myChart.addLegend(200, 10, 380, 20, "right");
+   myChart.draw();
+   row+=1;
+   col+=1;
+   
+   }
+/*  chartdrawn="Y";
+   };
+   */
+   
+   };
+   
+   function update(classType)
+	  {
+	  var filtered= data.filter(function(d){
+	  return d["Pclass"]==classType;
+	  });
+	  plot_chart(filtered,classType);  
+   };
+   
+   
+   var classTypeIdx=0;
+	  var classTypeInt= setInterval(function(){
+	  update(classType[classTypeIdx]);
+	  classTypeIdx++;
+	  if(classTypeIdx >=classType.length)
+	  {
+	  clearInterval(classTypeInt);
+	  summary_chart(data);
+   
+   }
+   },1000);
+   }
+  </script>
+ </div>
+</head>
+  <body>
+   <script type="text/javascript">
+    d3.csv("titanic.csv"
+	,draw);
+  </script>
+  
+  </body>
+</html>
