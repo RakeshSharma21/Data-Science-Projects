@@ -1,0 +1,169 @@
+Question 1:Summarize for us the goal of this project and how machine learning is useful in trying to accomplish it. As part of your answer, give some background on the dataset and how it can be used to answer the project question. Were there any outliers in the data when you got it, and how did you handle those?  [relevant rubric items: “data exploration”, “outlier investigation”]
+
+Answer: Goal of the project to identifying the person of interest in enron fraud case based upon the various features provided in the data set.Machine learning can help in big way in this case , based upon the provided features with the labeled data we can identify which type of features belongs to the person of interest class and on the basis of similar features we can suspect whether a employee belong to a poi class or non poi class.
+ 
+Background on provided dataset.
+Total number of data points: 146 
+allocation across classes:
+	POI : 18
+	Non POI: 128
+number of features used : 21
+Features with missing values: Yes , following is the list of missing values features wise.
+	bonus: 64
+	deferral_payments: 107
+	deferred_income: 97
+	director_fees: 129
+	email_address: 35
+	exercised_stock_options: 44
+	expenses: 51
+	from_messages: 60
+	from_poi_to_this_person: 60
+	from_this_person_to_poi: 60
+	loan_advances: 142
+	long_term_incentive: 80
+	other: 53
+	restricted_stock: 36
+	restricted_stock_deferred: 128
+	salary: 51
+	shared_receipt_with_poi: 60
+	to_messages: 60
+	total_payments: 21
+	total_stock_value: 20
+
+dataset contains the different , different features from finances features to email features,these features can be great help to analysis a employee on the basis of financial features(including salary bonus,total payment etc) to email features like (to and from poi email etc.)
+
+Were there any outliers in the data:
+Yes , two were straight foward outlier , that i have found were 'TOTAL' and 'THE TRAVEL AGENCY IN THE PARK' entries in employee names. 
+'TOTAL' outlier is easily identified by plotting a graph on the basis of salary and bonus.
+'THE TRAVEL AGENCY IN THE PARK' i would not say it is a direct outlier, but this entry does not refer an employee.
+
+Apart from above mentioned outlier , i have identified one of the employee have most of the feature value as null(employee name LOCKHART EUGENE E).other observation was the email_address feature having the string data and not useful for our analysis.
+
+Handling of outlier:
+I have removed 3 of the mentioned the outlier from the dataset and email_address feature from feature_list.
+
+Question 2:What features did you end up using in your POI identifier, and what selection process did you use to pick them? Did you have to do any scaling? Why or why not? As part of the assignment, you should attempt to engineer your own feature that does not come ready-made in the dataset -- explain what feature you tried to make, and the rationale behind it. (You do not necessarily have to use it in the final analysis, only engineer and test it.) In your feature selection step, if you used an algorithm like a decision tree, please also give the feature importances of the features that you use, and if you used an automated feature selection function like SelectKBest, please report the feature scores and reasons for your choice of parameter values.  [relevant rubric items: “create new features”, “intelligently select features”, “properly scale features”]
+
+Answer: Intially i have started by selecting all the 21 features, Then i have used Kbest feature selection algorithm to select the best 10 features got the decent success following are the performance metrices for Decision Tree and GaussianNB.
+
+Accuracy for Decision Tree(using KBest) is  0.813953488372
+
+Performance metrices in final pipeline using GaussianNB(using KBest) with out new features:
+
+Accuracy: 0.85080       Precision: 0.41949      Recall: 0.31000 
+
+
+  
+you should attempt to engineer your own feature that does not come ready-made in the dataset:
+Yes i have introduced two more feature in the dataset . following are the features
+	1.bonus_to_tot_pay_ratio
+	2.poi_to_total_email_ratio
+
+my intuition is that bonus/total_payment should have higher value for a poi employee. 
+for second feature poi_to_total_email_ratio, it looks obvious that poi would used to interact more than normal.
+
+Performance metrices for Decision Tree and GaussianNB algorithm after adding new features.
+
+Accuracy for Decision Tree(using KBest) is  0.837209302326
+
+Performance metrices in final pipeline using GaussianNB(using KBest) after new features:
+
+Accuracy: 0.85807       Precision: 0.45820      Recall: 0.35350
+
+there is improvement of more than 2% is observed in Decision Tree algorithm and improvement of 4% being observed in precision and recall in final GaussianNB pipeline.
+
+I have used selectKBest to select best 10 features ,and gets the decent accuracy,
+Following is score for the top 10 features select using k best algorithm
+
+	shared_receipt_with_poi:24.182898678566879
+	total_stock_value:20.792252047181535
+	salary:18.289684043404513
+	long_term_incentive:11.458476579280369
+	bonus:8.7727777300916756
+	deferred_income:7.1840556582887247
+	restricted_stock:6.0941733106389453
+	total_payments:1.6463411294420076
+	loan_advances:0.22461127473600989
+	exercised_stock_options:0.065499652909942141
+
+Apart from the 10 feature with their respective score , we have also added our engineered feature to feature list following are the features:
+
+	1.bonus_to_tot_pay_ratio
+	2.poi_to_total_email_ratio
+
+	
+Apart from using the KBest algorithm for choosing best feature , i have also used PCA and PCA with 3 component gets me the best performance metrices number.
+
+Scaling the feature is very important in our analysis as all the 12 features we have selected belongs to different categories. some financial feature like (bonus,salary,total_payments) can be described in currency, other features like (shared_receipt_with_poi,poi_to_total_email_ratio) are fraction number for the number of email
+
+Following is the performance metrices obtained without using standard scaling
+
+Accuracy: 0.86367       Precision: 0.47847      Recall: 0.25000
+
+After using the standard scaling i have got following performance metrices for the final pipeline
+
+Accuracy: 0.85807       Precision: 0.45820      Recall: 0.35350
+
+In pipeline,after scaling the values, i have used PCA  with different parameter values of n_component with gridSearchCV method. and i have got accuracy around 85%
+
+Question 3:What algorithm did you end up using? What other one(s) did you try? How did model performance differ between algorithms?  [relevant rubric item: “pick an algorithm”]
+
+Answer3:
+I have end up using the GaussianNB, this algorithm gives the best accuracy and performance metrices.
+Apart from GaussianNB i have used the following algorithms:
+SVM
+Decision Tree
+Knn
+
+Following are the accuracy of all the algorithm used in analysis
+
+Accuracy for GaussianNB(using KBest) is  0.860465116279
+Accuracy for SVM(using KBest) is  0.883720930233
+Accuracy for Decision Tree(using KBest) is  0.837209302326
+Accuracy for Knn decision Tree(using KBest) is  0.906976744186
+
+
+Question 4:What does it mean to tune the parameters of an algorithm, and what can happen if you don’t do this well?  How did you tune the parameters of your particular algorithm? What parameters did you tune? (Some algorithms do not have parameters that you need to tune -- if this is the case for the one you picked, identify and briefly explain how you would have done it for the model that was not your final choice or a different model that does utilize parameter tuning, e.g. a decision tree classifier).  [relevant rubric items: “discuss parameter tuning”, “tune the algorithm”]
+
+Answer 4: Tune a parameter is very essential in an algorithm, (For example in knn algorithm ,if we don't choose the n_neighbour wisely we can end up either overfitting or underfitting the data point).
+I have tried to tune knn algorithm at first hand . i have tried with the different value of n_neighbour(tells how may data point near to a point classify in a same classifier) and differ values of weighths and different type of algorithm availble in knn algorithm alongwith the knn parameter ,i have also used different value for pca's n_component(how many component we want to introduced using the existing component ) parameter.
+
+
+My final choice of classifier is GaussianNB as it was fast and have better accuracy than other algorithm.
+
+
+Question 5: What is validation, and what’s a classic mistake you can make if you do it wrong? How did you validate your analysis?  [relevant rubric items: “discuss validation”, “validation strategy”]
+
+Validation is performed to ensure that a machine learning algorithm generalizes well. A classic mistake is over-fitting, where the model is trained and performs very well on the training dataset, but markedly worse on the cross-validation and test datasets. I utilized following methods for validating the analysis:
+
+I have used train_test_split validation to split the given data set with 70% of training set and 30% of testing set.
+
+I have used train_test_split validation two times in the code. Once the validate the data with all the 21 features and then finding the accuracy for the different algorithm and second time i have used train_test_split validation with 12 features(10 Kbest feature + 2 engineered features)
+
+
+Question6:Give at least 2 evaluation metrics and your average performance for each of them.  Explain an interpretation of your metrics that says something human-understandable about your algorithm’s performance. [relevant rubric item: “usage of evaluation metrics”]
+
+Answer 6: Two major evaluation metrics are precision and recall.
+Precision :  Precision is the ratio of correctly predicted positive observations to the total predicted positive observations
+precision can be defined as (true positive/true positive+false positive)
+
+In our analysis precision described the true positive records that are actual poi and describe how often a false alarm(identifying a person as poi whenever he is not a poi) is raised.
+
+
+recall :it is also known as sensitivity ,Recall is the ratio of correctly predicted positive observations to the all observations in actual class(which includes
+ true positive and false negative)
+recall can be defined as ( true positive /true positive + false negative)
+
+Recall is our analysis can be described as ratio of pois to the person flagged as poi and describe the chances of identifying as person as non poi whenever he is a poi)
+
+Our focus should be to get the best of the both world (recall and precision) better the value of these metrices better the accuracy
+
+following are the values obtained from the GaussianNB algorithm
+
+Accuracy: 0.85807       Precision: 0.45820      Recall: 0.35350 
+
+Conclusion:
+Most challenging part of this project for me to get the desired value for performance metrices, i have started with knn algorithm try to tune it with various
+values of neighbours , algorithm and weighths but later i have found out , that i havn't scaled my feature well and that was the reason i was constantly getting the worst performance. at the end i have choosed guassion NB as it was quick and more accurate. For further study , i would like to use ada boost algorithium to classify the same example. and i would to check whether it would perform better than Guassian NB. 
+
+
