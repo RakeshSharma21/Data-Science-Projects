@@ -39,9 +39,4 @@ def SentimentAnalyzer(analysinglevel,data):
              ss = sid.polarity_scores(sentence)
              for k in ss:
                  print('{0}: {1}, \n'.format(k, ss[k]), end='')
-                 
-chineese_text = open('chineese.txt', 'r', encoding="utf8").read().replace('\n', ',')
-arr=translate_language(chineese_text,'zh','en')
-
-SentimentAnalyzer('Line',arr)
 
