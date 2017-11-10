@@ -10,4 +10,7 @@ Use `pip`:
 
 ## Usage
 
-import translation_py
+import translate_py
+#the following code with import
+arr=translate_py.translate_language(chineese_text,'zh','en')
+SentimentAnalyzer('Line',arr)
