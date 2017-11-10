@@ -9,3 +9,5 @@ Use `pip`:
 `pip install ntlk`
 
 ## Usage
+
+import translation_py
